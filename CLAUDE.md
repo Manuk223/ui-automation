@@ -19,6 +19,14 @@ UI test automation project using **Selenium WebDriver 4** and **TestNG 7**, buil
 - In PowerShell, quote `-D` arguments as shown, or PowerShell may split them at the `.`.
 - With no `<includes>` configured, Surefire picks up only test classes named `*Test`, `Test*`, `*Tests` or `*TestCase`.
 
+Add `"-Dheadless=true"` to any test command to run Chrome without a window. Surefire passes it on to the test JVM.
+
+## Architecture
+
+- **Page objects** (`src/main/java/com/manuk/pages`): each page class owns its locators and `WebDriverWait`, and exposes actions (`loginAs`) and reads (`getFlashMessage`). Tests never use locators directly.
+- **`BaseTest`** (`src/test/java/com/manuk/tests`): opens a fresh `ChromeDriver` in `@BeforeMethod` and quits it in `@AfterMethod(alwaysRun = true)`, so every test method gets its own browser. Test classes extend it and use the protected `driver`.
+- Tests run against the public practice site https://the-internet.herokuapp.com, so they need internet access.
+
 ## Structure conventions
 
 - Test classes go in `src/test/java`. TestNG is `test`-scoped, so `org.testng` imports (`@Test`, `Assert`) compile only there.
